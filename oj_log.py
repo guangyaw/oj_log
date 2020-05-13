@@ -1,6 +1,7 @@
 
 # import requests
 from bs4 import BeautifulSoup
+import csv
 # from fake_useragent import UserAgent
 #
 # i = 1
@@ -17,7 +18,8 @@ from openpyxl import Workbook
 
 from selenium import webdriver
 import time
-page = 613
+
+page = 620
 target_list = [[0 for i in range(8)] for j in range(12*page)]
 m = 0
 for z in range(page):
@@ -26,7 +28,7 @@ for z in range(page):
     driver = webdriver.Chrome("/home/xyaw/PycharmProjects/oj_log/chromedriver")  # 如果你沒有把webdriver放在同一個資料夾中，必須指定位置給他
     driver.get("https://oj.openedu.tw/status?myself=0&page=%d"%(z+1))
 
-    time.sleep(4)  # 等待javascript渲染出來，當然這個部分還有更進階的作法，關鍵字是implicit wait, explicit wait，有興趣可以自己去找
+    time.sleep(2)  # 等待javascript渲染出來，當然這個部分還有更進階的作法，關鍵字是implicit wait, explicit wait，有興趣可以自己去找
     html = driver.page_source  # 取得html文字
     driver.close()  # 關掉Driver打開的瀏覽器
 
@@ -70,3 +72,10 @@ for z in range(page):
 
 print(target_list)
 print(len(target_list))
+
+csv_file = "test_excel.csv"
+with open(csv_file,'w+',newline='') as fp:
+    writer = csv.writer(fp)
+    writer.writerow(["When","ID","Status","Problem","Time","Memory","Language","Author"])
+    for row in target_list:
+        writer.writerow(row)
